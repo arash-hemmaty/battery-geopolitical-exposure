@@ -6,7 +6,6 @@ import sys
 from pathlib import Path
 import pandas as pd
 
-# Add project root to sys.path so we can import src.db
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.append(str(PROJECT_ROOT))
 
@@ -17,7 +16,6 @@ def run_exposure_engine():
     
     engine = get_engine()
     
-    # Query the view we just created
     query = """
         SELECT 
             year, 
@@ -25,10 +23,10 @@ def run_exposure_engine():
             hs_code, 
             exposed_qty_t, 
             total_qty_t, 
-            exposure_share_pct
+            potential_exposure_pct
         FROM geo.v_kpi1_exposure
-        WHERE year = (SELECT MAX(year) FROM geo.v_kpi1_exposure) -- فقط آخرین سال داده
-        ORDER BY exposure_share_pct DESC
+        WHERE year = (SELECT MAX(year) FROM geo.v_kpi1_exposure)
+        ORDER BY potential_exposure_pct DESC
     """
     
     try:
@@ -40,12 +38,11 @@ def run_exposure_engine():
             return
 
         print(f"📊 Results for the latest available year ({df['year'].iloc[0]}):\n")
-        print(f"{'Importer':<15} | {'HS Code':<10} | {'Policy Type':<20} | {'Exposure %':<10} | {'Exposed Qty (t)':<15}")
-        print("-" * 80)
+        print(f"{'Importer':<15} | {'HS Code':<10} | {'Policy Type':<20} | {'Potential Exposure %':<20} | {'Exposed Qty (t)':<15}")
+        print("-" * 90)
         
-        # Show top 10 most exposed importers
         for _, row in df.head(10).iterrows():
-            print(f"{row['importer_name']:<15} | {row['hs_code']:<10} | {'Export Licensing':<20} | {row['exposure_share_pct']:>8.2f}% | {row['exposed_qty_t']:>15,.2f}")
+            print(f"{row['importer_name']:<15} | {row['hs_code']:<10} | {'Export Licensing':<20} | {row['potential_exposure_pct']:>18.2f}% | {row['exposed_qty_t']:>15,.2f}")
 
         print("\n✅ Exposure analysis completed successfully.")
         
