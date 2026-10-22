@@ -23,3 +23,20 @@ This document addresses critical validations performed on the exposure and scena
 ## 5. Time Window Alignment & Intermediary Check
 - **Time Alignment:** Due to the lack of monthly Comtrade data for these specific routes, the analysis uses annual aggregations (2023 vs 2024). Seasonality is a known limitation.
 - **Intermediary Check:** Re-export flows (e.g., via Mexico or Vietnam) are not fully captured by bilateral Comtrade data for these HS codes. This is documented as a limitation.
+
+## 6. Advanced Validations (Stage 3)
+
+### Intermediary Check (Mexico/Vietnam Bypass)
+- **Test:** Checked if Mexico imports from China and re-exports to the US (HS 250490).
+- **Result:** No evidence of significant re-export flows. Mexico's imports from China are negligible, and its exports to the US are very small (~200-800t). The hypothesis of bypassing restrictions via Mexico is rejected for this dataset.
+
+### Unbalanced Panel Check
+- **Test:** Checked for missing years (nulls) vs zero imports for DEU, KOR, USA (2021-2025).
+- **Result:** All three countries have continuous observations across all years. The panel is balanced. No missing data was mistakenly treated as zero trade.
+
+### Time Window Alignment (Limitation)
+- **Test:** Aligning 6-month windows before/after Dec 2023.
+- **Result:** The ingested Comtrade data is annual (A). Monthly data is not available in our current dataset. The Event Analysis remains at the annual level (2023 vs 2024). Seasonality is a documented limitation.
+
+## 7. Country-Specific Context (Germany)
+- **Rotterdam Effect:** Germany's imports of graphite may enter through EU ports (e.g., Rotterdam in the Netherlands or Antwerp in Belgium). Bilateral Comtrade data might not fully capture intra-EU re-exports. The actual direct dependency of Germany on China could be slightly lower or higher than measured.
